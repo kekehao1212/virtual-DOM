@@ -9,6 +9,7 @@ function flatten(arr) {
   return [].concat(...arr)
 }
 
+ //返回需要的hyperscript对象，参数分别为节点类型、属性对象、子节点的数组
 function h (type, props, ...children) {
   return {
     type,
@@ -39,7 +40,6 @@ function createElement(node) {
   }
 
   let {type, props, children} = node
-  console.log(node)
   const el = document.createElement(type)
   setProps(el, props)
   children.map(createElement)

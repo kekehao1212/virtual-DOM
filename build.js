@@ -4,8 +4,8 @@ var CREATE = 'CREATE';
 var REMOVE = 'REMOVE';
 var REPLACE = 'REPLACE';
 var UPDATE = 'UPDATE';
-var SET_PROP = 'SET PROP';
-var REMOVE_PROP = 'REMOVE PROP';
+var SET_PROP = 'SET_PROP';
+var REMOVE_PROP = 'REMOVE_PROP';
 
 function diff(newNode, oldNode) {
   if (!oldNode) {
@@ -13,6 +13,7 @@ function diff(newNode, oldNode) {
   }
 
   if (!newNode) {
+    console.log('remove');
     return { type: REMOVE };
   }
 
@@ -86,7 +87,7 @@ function patch(parent, patches) {
         var _newNode = patches.newNode;
 
         var _newEl = createElement(_newNode);
-        return parent.removeChild(_newEl, el);
+        return parent.replaceChild(_newEl, el);
         break;
       }
     case UPDATE:
@@ -127,6 +128,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 function view(count) {
   var r = [].concat(_toConsumableArray(Array(count).keys()));
+  console.log(r);
   return h(
     'ul',
     { id: 'filmList', className: 'list-' + count % 3 },
@@ -147,6 +149,7 @@ function flatten(arr) {
   return (_ref = []).concat.apply(_ref, _toConsumableArray(arr));
 }
 
+//返回需要的hyperscript对象，参数分别为节点类型、属性对象、子节点的数组
 function h(type, props) {
   for (var _len = arguments.length, children = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     children[_key - 2] = arguments[_key];
@@ -182,6 +185,7 @@ function tick(el, count) {
 }
 
 function createElement(node) {
+  console.log(node);
   if (typeof node === 'string') {
     return document.createTextNode(node);
   }
@@ -190,7 +194,6 @@ function createElement(node) {
       props = node.props,
       children = node.children;
 
-  console.log(node);
   var el = document.createElement(type);
   setProps(el, props);
   children.map(createElement).forEach(el.appendChild.bind(el));

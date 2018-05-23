@@ -2,9 +2,10 @@ const CREATE = 'CREATE'
 const REMOVE = 'REMOVE'
 const REPLACE = 'REPLACE'
 const UPDATE = 'UPDATE'
-const SET_PROP = 'SET PROP'
-const REMOVE_PROP = 'REMOVE PROP'
+const SET_PROP = 'SET_PROP'
+const REMOVE_PROP = 'REMOVE_PROP'
 
+//diff差异
 function diff(newNode, oldNode) {
   if (!oldNode) {
     return {type: CREATE, newNode}
@@ -27,6 +28,30 @@ function diff(newNode, oldNode) {
   }
 }
 
+//diff差异
+function diff(newNode, oldNode) {
+  if (!oldNode) {
+    return {type: CREATE, newNode}
+  }
+
+  if(!newNode) {
+    return {type: REMOVE}
+  }
+
+  if(changed(newNode, oldNode)) {
+    return {type: REPLACE, newNode}
+  }
+
+  if (newNode.type) {
+    return {
+      type: UPDATE,
+      props: diffProps(newNode, oldNode),
+      children: diffChildren(newNode, oldNode)
+    }
+  }
+}
+
+//判断两个结点类型不同
 function changed(node1, node2) {
   return typeof(node1) !== typeof(node2) ||
          typeof(node1) === 'string' && node1 !== node2 ||
@@ -39,7 +64,7 @@ function diffProps(newNode, oldNode) {
   let props = Object.assign({}, newNode.props, oldNode.props)
   Object.keys(props).forEach(key => {
     const newVal = newNode.props[key]
-    const oldVal = newNode.props[key]
+    const oldVal = oldNode.props[key]
     if(!newVal) {
       patches.push({type: REMOVE_PROP, key, value: oldVal})
     }
@@ -85,7 +110,7 @@ function patch(parent, patches, index = 0) {
     case REPLACE: {
       const {newNode} = patches
       const newEl = createElement(newNode)
-      return parent.removeChild(newEl, el)
+      return parent.replaceChild(newEl, el)
       break
     }
     case UPDATE: {
