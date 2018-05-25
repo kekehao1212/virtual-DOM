@@ -56,6 +56,13 @@ function setProp(target, name, value) {
   target.setAttribute(name, value)
 }
 
+function removeProp(target, name, value) {
+  if (name === 'className') {
+    return target.removeAttribute('class')
+  }
+  target.removeAttribute(name)
+}
+
 function setProps(target, props) {
   Object.keys(props).forEach(key => {
     setProp(target, key, props[key])

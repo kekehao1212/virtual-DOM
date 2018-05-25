@@ -134,10 +134,3 @@ function patchProps(parent, patches) {
     }
   })
 }
-
-function removeProp(target, name, value) {
-  if (name === 'className') {
-    return target.removeAttribute('class')
-  }
-  target.removeAttribute(name)
-}
